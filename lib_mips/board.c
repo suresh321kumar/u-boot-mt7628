@@ -41,8 +41,8 @@ DECLARE_GLOBAL_DATA_PTR;
 int modifies= 0;
 
 #ifdef DEBUG
-   #define DATE      "05/25/2006"
-   #define VERSION   "v0.00e04"
+   #define DATE      "19 APR 2020"
+   #define VERSION   "v1"
 #endif
 #if ( ((CFG_ENV_ADDR+CFG_ENV_SIZE) < CFG_MONITOR_BASE) || \
       (CFG_ENV_ADDR >= (CFG_MONITOR_BASE + CFG_MONITOR_LEN)) ) || \
@@ -536,7 +536,8 @@ static int init_func_ram (void)
 static int display_banner(void)
 {
    
-	printf ("\n\nWooya by wuya,V1.0.6\n\n");
+	printf ("\n\n ==[A Custom U-boot for MT7628]==\n");
+	printf (" ==[By Sureshkumar <suresh241098@gmail.com>]==\n\n");
 	return (0);
 }
 
@@ -2870,7 +2871,7 @@ void disable_pcie(void)
 void gpio_init(void)
 {
 	u32 val;
-	printf( "MT7688 wifi module: www.hi-wooya.com\n" );
+	printf( "BR325, A router by Kloud9.in \n" );
 	//set gpio2_mode 1:0=2b01 wled,p1,p2,p3,p4 is gpio.p0 is ephy
 	val = 0x551;
 	RALINK_REG(RT2880_SYS_CNTL_BASE+0x64)=val;
@@ -2906,7 +2907,7 @@ int detect_wps( void )
 		return 0;
 	}
 	else{
-		printf("wps button pressed!\n");
+		printf("[RESET PRESSED!!!!!]]\n");
 		return 1;
 	}
 }

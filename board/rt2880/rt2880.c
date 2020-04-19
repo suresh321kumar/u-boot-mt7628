@@ -152,7 +152,7 @@ long int initdram(int board_type)
 
 int checkboard (void)
 {
-	puts ("Board: Ralink APSoC ");
+	//puts ("Board: Ralink APSoC ");
 	return 0;
 }
 

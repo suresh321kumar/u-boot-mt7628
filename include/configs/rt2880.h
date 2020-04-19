@@ -92,7 +92,7 @@ extern unsigned int  CFG_BLOCKSIZE;
 
 #define SERIAL_CLOCK_DIVISOR 16
 
-#define CONFIG_BOOTDELAY	10	/* autoboot after 2 seconds	*/
+#define CONFIG_BOOTDELAY	0	/* autoboot after 2 seconds	*/
 
 //#define CONFIG_BAUDRATE		115200
 #define CONFIG_BAUDRATE		57600

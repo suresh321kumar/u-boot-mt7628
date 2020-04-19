@@ -129,6 +129,8 @@ static char  file_name_space[ARGV_LEN];
 void gpio_init(void);
 void led_on(void);
 void led_off(void);
+void all_led_on(void);
+void all_led_off(void);
 int detect_wps(void);
 void gpio_test( void );
 static void Init_System_Mode(void)
@@ -504,7 +506,7 @@ static int init_func_ram (void)
 #else
 	int board_type = 0;	/* use dummy arg */
 #endif
-	puts ("DRAM:  ");
+	//puts ("DRAM:  ");
 
 /*init dram config*/
 #ifdef RALINK_DDR_OPTIMIZATION
@@ -861,10 +863,10 @@ void board_init_f(ulong bootflag)
 	 * tricky: relocate code to original TEXT_BASE
 	 * for ICE souce level debuggind mode 
 	 */	
-	debug ("relocate_code Pointer at: %08lx\n", addr);
+//	debug ("relocate_code Pointer at: %08lx\n", addr);
 	relocate_code (addr_sp, id, /*TEXT_BASE*/ addr);	
 #else
-	debug ("relocate_code Pointer at: %08lx\n", addr);
+	//debug ("relocate_code Pointer at: %08lx\n", addr);
 	relocate_code (addr_sp, id, addr);
 #endif
 
@@ -897,13 +899,111 @@ void OperationSelect(void)
 #endif // RALINK_UPGRADE_BY_SERIAL //
 	printf("   %d: Load Boot Loader code then write to Flash via TFTP. \n", SEL_LOAD_BOOT_WRITE_FLASH);
 }
+////////////////////////////////////////////////////  {STOCK}  //////////////////////////////////////////////////////
 
+// int tftp_config(int type, char *argv[])
+// {
+// 	char *s;
+// 	char default_file[ARGV_LEN], file[ARGV_LEN], devip[ARGV_LEN], srvip[ARGV_LEN], default_ip[ARGV_LEN];
+
+// 	printf(" Please Input new ones /or Ctrl-C to discard\n");
+
+// 	memset(default_file, 0, ARGV_LEN);
+// 	memset(file, 0, ARGV_LEN);
+// 	memset(devip, 0, ARGV_LEN);
+// 	memset(srvip, 0, ARGV_LEN);
+// 	memset(default_ip, 0, ARGV_LEN);
+
+// 	printf("\tInput device IP ");
+// 	s = getenv("ipaddr");
+// 	memcpy(devip, s, strlen(s));
+// 	memcpy(default_ip, s, strlen(s));
+
+// 	printf("(%s) ", devip);
+// 	input_value(devip);
+// 	setenv("ipaddr", devip);
+// 	if (strcmp(default_ip, devip) != 0)
+// 		modifies++;
+
+// 	printf("\tInput server IP ");
+// 	s = getenv("serverip");
+// 	memcpy(srvip, s, strlen(s));
+// 	memset(default_ip, 0, ARGV_LEN);
+// 	memcpy(default_ip, s, strlen(s));
+
+// 	printf("(%s) ", srvip);
+// 	input_value(srvip);
+// 	setenv("serverip", srvip);
+// 	if (strcmp(default_ip, srvip) != 0)
+// 		modifies++;
+
+// 	if(type == SEL_LOAD_BOOT_SDRAM 
+// 			|| type == SEL_LOAD_BOOT_WRITE_FLASH 
+// #ifdef RALINK_UPGRADE_BY_SERIAL
+// 			|| type == SEL_LOAD_BOOT_WRITE_FLASH_BY_SERIAL
+// #endif
+// 			) {
+// 		if(type == SEL_LOAD_BOOT_SDRAM)
+// #if defined (RT2880_ASIC_BOARD) || defined (RT2880_FPGA_BOARD)
+// 			argv[1] = "0x8a200000";
+// #else
+// 		argv[1] = "0x80200000";
+// #endif
+// 		else
+// #if defined (RT2880_ASIC_BOARD) || defined (RT2880_FPGA_BOARD)
+// 			argv[1] = "0x8a100000";
+// #else
+// 		argv[1] = "0x80100000";
+// #endif
+// 		printf("\tInput Uboot filename ");
+// 		//argv[2] = "uboot.bin";
+// 		strncpy(argv[2], "uboot.bin", ARGV_LEN);
+// 	}
+// 	else if (type == SEL_LOAD_LINUX_WRITE_FLASH) {
+// #if defined (RT2880_ASIC_BOARD) || defined (RT2880_FPGA_BOARD)
+// 		argv[1] = "0x8a100000";
+// #else
+// 		argv[1] = "0x80100000";
+// #endif
+// 		printf("\tInput Linux Kernel filename ");
+// 		//argv[2] = "uImage"; winfred: use strncpy instead to prevent the buffer overflow at copy_filename later
+// 		strncpy(argv[2], "uImage", ARGV_LEN);
+// 	}
+// 	else if (type == SEL_LOAD_LINUX_SDRAM ) {
+// 		 // bruce to support ramdisk 
+// #if defined (RT2880_ASIC_BOARD) || defined (RT2880_FPGA_BOARD)
+// 		argv[1] = "0x8a800000";
+// #else
+// 		argv[1] = "0x80A00000";
+// #endif
+// 		printf("\tInput Linux Kernel filename ");
+// 		//argv[2] = "uImage";
+// 		strncpy(argv[2], "uImage", ARGV_LEN);
+// 	}
+
+// 	s = getenv("bootfile");
+// 	if (s != NULL) {
+// 		memcpy(file, s, strlen(s));
+// 		memcpy(default_file, s, strlen(s));
+// 	}
+// 	printf("(%s) ", file);
+// 	input_value(file);
+// 	if (file == NULL)
+// 		return 1;
+// 	copy_filename (argv[2], file, sizeof(file));
+// 	setenv("bootfile", file);
+// 	if (strcmp(default_file, file) != 0)
+// 		modifies++;
+
+// 	return 0;
+// }
+////////////////////////////////////////////////  {CUSTOM}  //////////////////////////////////////////////////////////
 int tftp_config(int type, char *argv[])
 {
 	char *s;
 	char default_file[ARGV_LEN], file[ARGV_LEN], devip[ARGV_LEN], srvip[ARGV_LEN], default_ip[ARGV_LEN];
 
-	printf(" Please Input new ones /or Ctrl-C to discard\n");
+	//printf(" Please Input new ones /or Ctrl-C to discard\n");
 
 	memset(default_file, 0, ARGV_LEN);
 	memset(file, 0, ARGV_LEN);
@@ -912,24 +1012,24 @@ int tftp_config(int type, char *argv[])
 	memset(default_ip, 0, ARGV_LEN);
 
 	printf("\tInput device IP ");
-	s = getenv("ipaddr");
+	s = "192.168.7.1";
 	memcpy(devip, s, strlen(s));
 	memcpy(default_ip, s, strlen(s));
 
 	printf("(%s) ", devip);
-	input_value(devip);
+	//input_value(devip);
 	setenv("ipaddr", devip);
 	if (strcmp(default_ip, devip) != 0)
 		modifies++;
 
 	printf("\tInput server IP ");
-	s = getenv("serverip");
+	s = "192.168.7.2";
 	memcpy(srvip, s, strlen(s));
 	memset(default_ip, 0, ARGV_LEN);
 	memcpy(default_ip, s, strlen(s));
 
 	printf("(%s) ", srvip);
-	input_value(srvip);
+	//input_value(srvip);
 	setenv("serverip", srvip);
 	if (strcmp(default_ip, srvip) != 0)
 		modifies++;
@@ -978,13 +1078,13 @@ int tftp_config(int type, char *argv[])
 		strncpy(argv[2], "uImage", ARGV_LEN);
 	}
 
-	s = getenv("bootfile");
+	s = "firm_initramfs.bin";
 	if (s != NULL) {
 		memcpy(file, s, strlen(s));
 		memcpy(default_file, s, strlen(s));
 	}
 	printf("(%s) ", file);
-	input_value(file);
+	//input_value(file);
 	if (file == NULL)
 		return 1;
 	copy_filename (argv[2], file, sizeof(file));
@@ -994,7 +1094,7 @@ int tftp_config(int type, char *argv[])
 
 	return 0;
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 void trigger_hw_reset(void)
 {
 #ifdef GPIO14_RESET_MODE
@@ -1971,14 +2071,20 @@ void board_init_r (gd_t *id, ulong dest_addr)
 		break;
 	}
 	udelay(100000);
-	if ( counter > 7 ) {
-		printf( "\n\nAll GPIO test...\n\n");
+	if ( counter > 5 ) {
+		//////////////////////// Stock /////////////////////
+		//printf( "\n\nAll GPIO test...\n\n");
+		//gpio_test();
+		////////////////////////// custom ///////////////////////
+		printf("\n\n\n =======================================\n");
+		printf("TFTP - INITRAMFS - TRIGGERED\n");
+		printf("=======================================\n\n\n");
+		BootType = '1';
+		printf("\n\n LEDs ON \n\n");
+		//led_on();
 		gpio_test();
-	} else if( counter > 2) {
-		printf( "\n\nHTTP server is starting for update...\n\n");
-		eth_initialize(gd->bd);
-		NetLoopHttpd();
-	} else {
+	}
+	else {
 		printf( "\n\nContinuing normal boot...\n\n");
 	}
 /*failsafe end!*/
@@ -2892,12 +2998,27 @@ void gpio_init(void)
 void led_on( void )
 {
 	//gpio44 gpio_dclr_1 644 clear bit12
-	RALINK_REG(0xb0000644)=1<<12;
+	//RALINK_REG(0xb0000644)=1<<12;
+	RALINK_REG(0xb0000644)=0xffffffff;
 }
 void led_off( void )
 {
 	//gpio44 gpio_dset_1 634 set bit12
 	RALINK_REG(0xb0000634)=1<<12;
+}
+void all_led_on( void )
+{
+	//gpio44 gpio_dclr_1 644 clear bit12
+	RALINK_REG(0xb0000644)=1<<12;
+	RALINK_REG(0xb0000620)=0x0;
+	RALINK_REG(0xb0000624)=0x0;
+}
+void all_led_off( void )
+{
+	//gpio44 gpio_dset_1 634 set bit12
+	RALINK_REG(0xb0000634)=1<<12;
+	RALINK_REG(0xb0000620)=0xffffffff;
+	RALINK_REG(0xb0000624)=0xffffffff;
 }
 int detect_wps( void )
 {
@@ -2955,7 +3076,13 @@ void gpio_test( void )
 	RALINK_REG(0xb0000604)&=~(0x01<<6);
 
 	udelay(600000);
-	for(i=0;i<100;i++){
+
+	// printf("\nall led on\n");
+	// RALINK_REG(0xb0000620)=0x0;
+	// RALINK_REG(0xb0000624)=0x0;
+	// udelay(200000);
+
+	for(i=0;i<10;i++){
 	printf("\nall led off\n");
 	RALINK_REG(0xb0000620)=0xffffffff;
 	RALINK_REG(0xb0000624)=0xffffffff;
@@ -2964,9 +3091,11 @@ void gpio_test( void )
 	RALINK_REG(0xb0000620)=0x0;
 	RALINK_REG(0xb0000624)=0x0;
 	udelay(200000);
-	if(detect_wps())
-	break;
+	// if(detect_wps())
+	// break;
 	}
+
+
 	RALINK_REG(RT2880_SYS_CNTL_BASE+0x3c)=agpio_cfg;
 	RALINK_REG(RT2880_SYS_CNTL_BASE+0x60)=gpio1_mode;
 	RALINK_REG(RT2880_SYS_CNTL_BASE+0x64)=gpio2_mode;
@@ -2974,6 +3103,7 @@ void gpio_test( void )
 	RALINK_REG(0xb0000604)=gpio_ctrl1;
 	RALINK_REG(0xb0000620)=gpio_dat0;
 	RALINK_REG(0xb0000624)=gpio_dat1;
+	led_on();
 }
 
 
